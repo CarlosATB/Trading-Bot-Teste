@@ -1,0 +1,81 @@
+Semanas da prova: 2024-02-19, 2024-02-26, 2024-04-01, 2024-04-22, 2024-04-29, 2024-05-06, 2024-05-20, 2024-07-08, 2024-07-15, 2024-09-09, 2025-02-10, 2025-05-26, 2025-07-28, 2025-08-11, 2025-08-18, 2025-10-06, 2025-10-13, 2025-11-10, 2025-11-24, 2025-12-15
+
+==========================================================================================
+=== BTCUSDT | candles de 1h  (46,732 candles, 20 faltando na Binance)
+==========================================================================================
+
+--- TREINO 2021-2023: 156 semanas, cada uma testada separadamente ---
+                         Semanas Ganhou do Bench Média/semana Excesso médio Retorno encadeado Queda máxima Sharpe (anual) Trocas/semana Tempo comprado Status final
+Médias 50/200                156             40%       +0.08%        -0.16%           -16.40%      -59.84%           0.09          2.10            49%     Demitido
+Médias 20/50                 156             37%       -0.34%        -0.57%           -54.78%      -73.47%          -0.41          5.10            51%     Demitido
+Breakout 55/20               156             39%       -0.56%        -0.79%           -64.71%      -73.06%          -0.84          2.77            31%     Demitido
+RSI 14 (30/70)               156             46%       -0.64%        -0.87%           -72.98%      -80.64%          -0.74          2.14            50%     Demitido
+Reversão 20/2.0σ             156             48%       -0.99%        -1.23%           -81.44%      -81.28%          -1.75          7.00            28%     Demitido
+Benchmark (buy and hold)     156               -       +0.24%             -           -19.79%      -78.92%           0.20          2.00           100%            -
+
+Empresa (RH redistribuindo capital) vs Benchmark, semanas encadeadas:
+  Empresa:   retorno -19.67% | queda máxima -33.77%
+  Benchmark: retorno -19.79% | queda máxima -78.92%
+
+Diário do RH:
+  2021-07-12: Médias 20/50: Estagiário -> Advertido (perdeu do Benchmark por -6.8%)
+  2021-07-12: Médias 50/200: Estagiário -> Promovido (ganhou do Benchmark por +15.6% em 26 semanas)
+  2021-07-12: Reversão 20/2.0σ: Estagiário -> Advertido (perdeu do Benchmark por -5.7%)
+  2021-07-12: Breakout 55/20: Estagiário -> Advertido (perdeu do Benchmark por -27.2%)
+  2021-07-12: RSI 14 (30/70): Estagiário -> Advertido (perdeu do Benchmark por -12.4%)
+  2021-09-06: Médias 20/50: Advertido -> Demitido (3 advertências seguidas)
+  2021-09-06: Reversão 20/2.0σ: Advertido -> Promovido (ganhou do Benchmark por +8.2% em 26 semanas)
+  2021-09-06: Breakout 55/20: Advertido -> Demitido (3 advertências seguidas)
+  2021-09-06: RSI 14 (30/70): Advertido -> Promovido (ganhou do Benchmark por +10.9% em 26 semanas)
+  2021-10-04: Reversão 20/2.0σ: Promovido -> Advertido (perdeu do Benchmark por -2.7%)
+  2021-10-04: RSI 14 (30/70): Promovido -> Advertido (perdeu do Benchmark por -11.6%)
+  2021-11-01: Médias 50/200: Promovido -> Advertido (perdeu do Benchmark por -8.1%)
+  2021-11-29: Reversão 20/2.0σ: Advertido -> Demitido (3 advertências seguidas)
+  2021-11-29: RSI 14 (30/70): Advertido -> Demitido (3 advertências seguidas)
+  2021-12-27: Médias 50/200: Advertido -> Demitido (3 advertências seguidas)
+
+--- PROVA: 20 semanas sorteadas de 2024-2025 (nada foi ajustado) ---
+                 Vitórias Excesso médio Chance de ser sorte Status no treino Aprovado Trocas/semana Tempo comprado
+Breakout 55/20      10/20        +0.38%                 59%         Demitido      não          2.60            38%
+Médias 50/200       10/20        +0.25%                 59%         Demitido      não          2.20            49%
+Médias 20/50         8/20        -0.57%                 87%         Demitido      não          5.40            50%
+RSI 14 (30/70)      13/20        -0.73%                 13%         Demitido      não          2.30            52%
+Reversão 20/2.0σ    11/20        -1.19%                 41%         Demitido      não          6.70            26%
+
+==========================================================================================
+=== BTCUSDT | candles de 15m  (186,914 candles, 94 faltando na Binance)
+==========================================================================================
+
+--- TREINO 2021-2023: 156 semanas, cada uma testada separadamente ---
+                         Semanas Ganhou do Bench Média/semana Excesso médio Retorno encadeado Queda máxima Sharpe (anual) Trocas/semana Tempo comprado Status final
+Médias 50/200                156             34%       -0.46%        -0.70%           -63.43%      -79.94%          -0.55          5.37            51%     Demitido
+RSI 14 (30/70)               156             49%       -1.02%        -1.25%           -84.54%      -90.91%          -1.27          5.41            52%     Demitido
+Breakout 55/20               156             31%       -1.35%        -1.59%           -90.55%      -91.88%          -1.76          9.46            32%     Demitido
+Médias 20/50                 156             29%       -2.43%        -2.67%           -98.35%      -98.36%          -3.03         18.04            50%     Demitido
+Reversão 20/2.0σ             156             24%       -2.98%        -3.22%           -99.21%      -99.19%          -5.48         25.83            25%     Demitido
+Benchmark (buy and hold)     156               -       +0.24%             -           -19.79%      -78.92%           0.20          2.00           100%            -
+
+Empresa (RH redistribuindo capital) vs Benchmark, semanas encadeadas:
+  Empresa:   retorno -37.31% | queda máxima -48.75%
+  Benchmark: retorno -19.79% | queda máxima -78.92%
+
+Diário do RH:
+  2021-07-12: Médias 20/50: Estagiário -> Demitido (queda máxima de -64%)
+  2021-07-12: Médias 50/200: Estagiário -> Advertido (perdeu do Benchmark por -12.1%)
+  2021-07-12: Reversão 20/2.0σ: Estagiário -> Demitido (queda máxima de -53%)
+  2021-07-12: Breakout 55/20: Estagiário -> Advertido (perdeu do Benchmark por -29.3%)
+  2021-07-12: RSI 14 (30/70): Estagiário -> Demitido (queda máxima de -50%)
+  2021-09-06: Médias 50/200: Advertido -> Demitido (3 advertências seguidas)
+  2021-09-06: Breakout 55/20: Advertido -> Demitido (3 advertências seguidas)
+
+--- PROVA: 20 semanas sorteadas de 2024-2025 (nada foi ajustado) ---
+                 Vitórias Excesso médio Chance de ser sorte Status no treino Aprovado Trocas/semana Tempo comprado
+Médias 50/200        9/20        -0.61%                 75%         Demitido      não          6.00            50%
+RSI 14 (30/70)      10/20        -1.36%                 59%         Demitido      não          5.10            51%
+Breakout 55/20       9/20        -2.22%                 75%         Demitido      não         11.10            33%
+Médias 20/50         5/20        -2.73%                 99%         Demitido      não         17.30            52%
+Reversão 20/2.0σ     7/20        -3.68%                 94%         Demitido      não         25.90            25%
+
+Tabelas salvas em D:\Trading Bot\empresa_trading\relatorios
+Lembrete: resultado passado não garante resultado futuro. Use isto para estudar, não como sinal para investir.
+
