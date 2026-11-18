@@ -225,3 +225,8 @@ __marimo__/
 # Dados baixados da Binance (podem ser baixados de novo)
 cache/
 relatorios/SINTETICO_*
+
+# MLflow e caches dos modelos
+mlflow.db
+mlruns/
+mlartifacts/
