@@ -57,7 +57,18 @@ def _montar(spot, eth, perp, funding, metricas):
     f["rsi_14_168"] = _rsi(c, 14).rolling(168).mean()
     f["boll_z_20"] = _z(c, 20)
     f["assimetria_168h"] = r1.rolling(168).skew()
-    f["tamanho_candle"] = (spot["fechamento"] - spot["abertura"]) / (spot["maxima"] - spot["minima"]).replace(0, np.nan)
+    # --- Tendência (v0.2: mais sensibilidade às altas)
+    f["ret_1008h"] = logc.diff(1008)                       # 6 semanas
+    f["dist_media_1000h"] = (logc - logc.rolling(1000).mean()) / (vol168 * np.sqrt(1000))
+    for n in (24, 168):                                    # eficiência de Kaufman: 1 = tendência limpa
+        f[f"eficiencia_{n}h"] = logc.diff(n).abs() / r1.abs().rolling(n).sum()
+    f["horas_positivas_168h"] = (r1 > 0).rolling(168).mean() - 0.5
+    f["queda_do_topo_168h"] = logc - np.log(spot["maxima"].rolling(168).max())
+    f["alta_do_fundo_168h"] = logc - np.log(spot["minima"].rolling(168).min())
+    t = np.arange(168) - 83.5
+    f["inclinacao_168h"] = logc.rolling(168).apply(lambda y: np.dot(t, y) / np.dot(t, t), raw=True) / vol168
+    f["media_72_acima_500"] = (logc.rolling(72).mean() - logc.rolling(500).mean()) / (vol168 * np.sqrt(500))
+    f["tamanho_candle"] =(spot["fechamento"] - spot["abertura"]) / (spot["maxima"] - spot["minima"]).replace(0, np.nan)
 
     # --- Fluxo e microestrutura (vem nos próprios candles da Binance)
     agressao = spot["compra_agressora"] / spot["volume"].replace(0, np.nan)

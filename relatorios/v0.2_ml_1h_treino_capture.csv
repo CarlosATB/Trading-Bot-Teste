@@ -1,0 +1,4 @@
+,Capture Ratio (altas),Downside Capture (quedas)
+Xavier (XGBoost),-0.033356084398955835,0.13088680467097297
+Luna (LightGBM + meta-labeling),0.03430955417560334,-0.022460541099499493
+Régua (regressão logística),-0.049868084337764525,-0.16909688976199982

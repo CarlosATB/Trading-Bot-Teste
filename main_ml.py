@@ -9,6 +9,7 @@ A prova deve ser olhada o MÍNIMO de vezes. Cada vez que ela roda fica registrad
 relatorios/registro_da_prova.csv, e isso entra na conta do Deflated Sharpe.
 """
 import argparse
+import os
 import hashlib
 import re
 import json
@@ -27,12 +28,15 @@ from ml.features import montar_features
 from ml.modelos import contratar_turma_ml
 from ml.regra import RegraParaTodos
 from ml.rotulos import triple_barrier
-from ml.walkforward import operar, prever_walkforward
+from ml.regimes import REGIMES, tabela_capture, tabela_por_regime
+from ml.walkforward import operar, prever_walkforward, regime_semanal_por_candle
 
+os.environ.setdefault("MLFLOW_DISABLE_AGENT_HINT", "1")
 RAIZ = Path(__file__).parent
 REL = RAIZ / "relatorios"
 CACHE_ML = PASTA_CACHE / "ml"
-INICIO_DADOS = "2019-01-01"
+VERSAO = "v0.2"
+INICIO_DADOS = "2017-08-17"               # v0.2: inclui as altas fortes de 2017 e 2019
 FIM_DADOS = "2026-01-01"
 ESTAGIO = ("2020-01-06", "2021-01-04")   # aprendizado inicial (não conta para o RH)
 TREINO = ("2021-01-04", "2024-01-01")    # avaliado pelo RH
@@ -51,14 +55,16 @@ def carregar():
     return spot, funding, feats, rot
 
 
-def previsoes_com_cache(est, feats, rot, semanas, rotulo_cache):
-    chave = hashlib.md5(json.dumps([est.nome, est.parametros, list(feats.columns), HORIZONTE, K_BARREIRA,
-                                    [str(s) for s in semanas]], sort_keys=True, default=str).encode()).hexdigest()[:10]
+def previsoes_com_cache(est, feats, rot, semanas, rotulo_cache, params_por_semana=None, regime=None):
+    agenda = None if params_por_semana is None else {str(s): params_por_semana(s) for s in semanas}
+    chave = hashlib.md5(json.dumps([VERSAO, est.nome, est.parametros, agenda, list(feats.columns), HORIZONTE,
+                                    K_BARREIRA, [str(s) for s in semanas], str(feats.index[0])],
+                                   sort_keys=True, default=str).encode()).hexdigest()[:10]
     arq = CACHE_ML / f"{rotulo_cache}_{est.nome.split()[0]}_{chave}.pkl"
     if arq.exists():
         return pd.read_pickle(arq)
     print(f"  treinando {est.nome} em {len(semanas)} semanas (walk-forward)...")
-    prev = prever_walkforward(est, feats, rot, semanas)
+    prev = prever_walkforward(est, feats, rot, semanas, params_por_semana=params_por_semana, regime=regime)
     CACHE_ML.mkdir(parents=True, exist_ok=True)
     prev.to_pickle(arq)
     return prev
@@ -114,11 +120,34 @@ def nome_metrica(k):
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", k).strip("_")
 
 
+def imprimir_regimes(titulo, ret, ops, base):
+    """v0.2: desempenho por regime de mercado + Capture Ratio e Downside Capture."""
+    bench = ret[NOME_BENCH]
+    bots = ret.drop(columns=NOME_BENCH)
+    cap = tabela_capture(bots, bench)
+    reg = tabela_por_regime(bots, bench, ops)
+    print(f"\n--- {titulo}: captura das altas e das quedas ---")
+    print(cap.map(lambda x: f"{x:+.0%}").to_string())
+    print("  (Capture: 100% = acompanhou a alta do BTC. Downside: 0% = evitou a queda; negativo = lucrou com ela)")
+    print(f"\n--- {titulo}: retorno médio por semana em cada regime (BTC entre parênteses) ---")
+    piv = reg.pivot(index="Regime", columns="Bot", values="Retorno médio").reindex(REGIMES)
+    btc = reg.drop_duplicates("Regime").set_index("Regime").reindex(REGIMES)
+    tab = piv.map(lambda x: f"{x:+.2%}")
+    tab.index = [f"{i} ({btc.loc[i, 'BTC médio']:+.1%}, {int(btc.loc[i, 'Semanas'])} sem.)" for i in tab.index]
+    print(tab.to_string())
+    if "Operações/semana" in reg:
+        op = reg.pivot(index="Regime", columns="Bot", values="Operações/semana").reindex(REGIMES)
+        print(f"\n--- {titulo}: operações por semana em cada regime ---")
+        print(op.map(lambda x: f"{x:.1f}").to_string())
+    cap.to_csv(f"{base}_capture.csv")
+    reg.to_csv(f"{base}_regimes.csv", index=False)
+
+
 def registrar_mlflow(nome_run, params, metricas, arquivos):
     try:
         import mlflow
         mlflow.set_tracking_uri(f"sqlite:///{(RAIZ / 'mlflow.db').as_posix()}")
-        mlflow.set_experiment("empresa_ml_fase1")
+        mlflow.set_experiment(f"empresa_ml_{VERSAO}")
         with mlflow.start_run(run_name=nome_run):
             mlflow.log_params({k: str(v)[:250] for k, v in params.items()})
             mlflow.log_metrics({k: float(v) for k, v in metricas.items() if pd.notna(v)})
@@ -137,8 +166,11 @@ def main():
 
     arq_params = REL / "ml_parametros.json"
     otim = json.loads(arq_params.read_text(encoding="utf-8")) if arq_params.exists() else {}
-    params = otim.get("melhores", {})
-    n_tentativas = max(1, otim.get("tentativas_total", 0)) + 3  # + os 3 modelos
+    por_ano = otim.get("por_ano", {})
+    params = {"por_ano": por_ano}
+    # todas as tentativas de todas as versões contam para o Deflated Sharpe
+    n_tentativas = sum(json.loads(a.read_text(encoding="utf-8")).get("tentativas_total", 0)
+                       for a in REL.glob("ml_parametros*.json")) + 3 * 2  # + os 3 modelos, em 2 versões
     registro = REL / "registro_da_prova.csv"
     vezes_prova = len(pd.read_csv(registro)) if registro.exists() else 0
     n_tentativas += vezes_prova
@@ -156,16 +188,44 @@ def main():
     regras, regra = RegrasRH(), RegraParaTodos()
     bench_all = resultados_semanais(spot, [], "1h", regras, semanas_wf + sem_prova)[0][NOME_BENCH]
 
-    turma = contratar_turma_ml(params)
-    ret, ops, ret_prova, ops_prova, metas = {}, {}, {}, {}, {}
+    regime = regime_semanal_por_candle(spot)
+    turma = contratar_turma_ml()
+    ret, ops, ret_prova, ops_prova, limiares = {}, {}, {}, {}, {}
     for est in turma:
-        prev = previsoes_com_cache(est, feats, rot, semanas_wf, "treino")
-        r, o, dec, hist_meta = operar(est, prev, feats, rot, spot, funding, semanas_wf, regra, HORIZONTE)
-        ret[est.nome], ops[est.nome], metas[est.nome] = r, o, hist_meta
+        chave = est.nome.split()[0]
+        agenda = por_ano.get(chave)
+
+        def params_da_semana(s, agenda=agenda):
+            """Optuna aninhado: cada ano usa parâmetros escolhidos só com o ano anterior."""
+            if not agenda:
+                return {}
+            return agenda.get(str(s.year) if s < pd.Timestamp(TREINO[1]) else "prova", {})
+
+        pps = params_da_semana if agenda else None
+        prev = previsoes_com_cache(est, feats, rot, semanas_wf, "treino", pps, regime)
+        limiar = 0.5
+        if hasattr(est, "treinar_meta"):
+            # Luna: o veto do meta é escolhido em cada ano com o resultado do ano anterior
+            candidatos = (0.35, 0.40, 0.45, 0.50)
+            testes = {lim: operar(type(est)(), prev, feats, rot, spot, funding, semanas_wf, regra, HORIZONTE,
+                                  limiar_meta=lim)[0] for lim in candidatos}
+            escolha = {}
+            for ano in (2021, 2022, 2023, "prova"):
+                anterior = 2023 if ano == "prova" else ano - 1
+                sh = {lim: r[r.index.year == anterior].mean() / r[r.index.year == anterior].std()
+                      for lim, r in testes.items()}
+                escolha[ano] = max(sh, key=lambda k: (np.nan_to_num(sh[k], nan=-9), -k))
+            limiares = escolha
+            print(f"  Luna: veto do meta por ano (escolhido com o ano anterior): {escolha}")
+            limiar = lambda s: 0.5 if s.year == 2020 else escolha.get(s.year, escolha["prova"])
+        r, o, dec, hist_meta = operar(type(est)(), prev, feats, rot, spot, funding, semanas_wf, regra, HORIZONTE,
+                                      limiar_meta=limiar)
+        ret[est.nome], ops[est.nome] = r, o
         if args.prova:
-            prev_p = previsoes_com_cache(est, feats, rot, sem_prova, "prova")
-            rp, op, _, _ = operar(est, prev_p, feats, rot, spot, funding, sem_prova, regra, HORIZONTE,
-                                  semana_de_estudo=False, historico_meta=hist_meta)
+            prev_p = previsoes_com_cache(est, feats, rot, sem_prova, "prova", pps, regime)
+            lim_p = limiares.get("prova", 0.5) if hasattr(est, "treinar_meta") else 0.5
+            rp, op, _, _ = operar(type(est)(), prev_p, feats, rot, spot, funding, sem_prova, regra, HORIZONTE,
+                                  semana_de_estudo=False, historico_meta=hist_meta, limiar_meta=lim_p)
             ret_prova[est.nome], ops_prova[est.nome] = rp, op
 
     ret = pd.DataFrame(ret)
@@ -192,7 +252,8 @@ def main():
         print("  " + linha)
     print(f"\n(DSR leva em conta {n_tentativas} tentativas no total. Acima de 95% é evidência forte.)")
 
-    base = REL / "ml_1h"
+    base = REL / f"{VERSAO}_ml_1h"
+    imprimir_regimes("TREINO 2021-2023", ret_treino, ops_treino, f"{base}_treino")
     tab.to_csv(f"{base}_treino_resumo.csv")
     ret.to_csv(f"{base}_semanas.csv")
     pd.concat(ops, names=["estagiario"]).to_csv(f"{base}_operacoes.csv")
@@ -208,6 +269,7 @@ def main():
         print(f"\n--- PROVA: {len(rp)} semanas sorteadas de 2024-2025 (nada foi ajustado) ---")
         print(fmt(prova.sort_values("Excesso médio", ascending=False)))
         prova.to_csv(f"{base}_prova_resumo.csv")
+        imprimir_regimes("PROVA", rp, ops_prova, f"{base}_prova")
         rp.to_csv(f"{base}_prova_semanas.csv")
         arquivos += [f"{base}_prova_resumo.csv"]
         nova = pd.DataFrame({"quando": [pd.Timestamp.now()], "parametros": [json.dumps(params)]})
