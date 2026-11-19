@@ -1,6 +1,6 @@
 # Empresa de Trading (simulação)
 
-> **[Primeiro resultado (v0.1)](RESULTADOS.md):** nenhum bot aprovado ainda; o Xavier (XGBoost) ganhou do Benchmark em 14 de 20 semanas da prova.
+> **[Segundo resultado (v0.2)](RESULTADOS_v0.2.md):** nenhum bot aprovado ainda; a Luna terminou a prova com diferença média positiva contra o BTC e passou a capturar 29% das altas. [Primeiro resultado (v0.1)](RESULTADOS.md).
 
 Laboratório para testar estratégias de trade com dados históricos, organizado como uma empresa:
 

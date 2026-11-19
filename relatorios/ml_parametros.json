@@ -1,32 +1,192 @@
 {
-  "melhores": {
+  "por_ano": {
     "Xavier": {
-      "n_estimators": 350,
-      "learning_rate": 0.021485617651261335,
-      "max_depth": 2,
-      "min_child_weight": 132.9364367540003,
-      "subsample": 0.8715581897808873,
-      "colsample_bytree": 0.48159576078485894,
-      "reg_lambda": 25.850508636005127,
-      "gamma": 1.1220041849182274
+      "2020": {
+        "n_estimators": 550,
+        "learning_rate": 0.011945260706247886,
+        "max_depth": 3,
+        "min_child_weight": 45.483409301339755,
+        "subsample": 0.9703603583443305,
+        "colsample_bytree": 0.5150570879740441,
+        "reg_lambda": 0.4334803727748812,
+        "gamma": 0.7465532550877846
+      },
+      "2021": {
+        "n_estimators": 250,
+        "learning_rate": 0.01192273535303768,
+        "max_depth": 4,
+        "min_child_weight": 79.0321546373033,
+        "subsample": 0.9983227337368462,
+        "colsample_bytree": 0.7353980401358108,
+        "reg_lambda": 3.8387575268327034,
+        "gamma": 2.0419112967266595
+      },
+      "2022": {
+        "n_estimators": 300,
+        "learning_rate": 0.031614222158313394,
+        "max_depth": 5,
+        "min_child_weight": 134.31965769725232,
+        "subsample": 0.6904705665742692,
+        "colsample_bytree": 0.3461554428341336,
+        "reg_lambda": 0.5993718325120223,
+        "gamma": 4.5479676385980685
+      },
+      "2023": {
+        "n_estimators": 300,
+        "learning_rate": 0.01619918163554697,
+        "max_depth": 2,
+        "min_child_weight": 198.2889358615385,
+        "subsample": 0.9161946978450233,
+        "colsample_bytree": 0.5186545306178384,
+        "reg_lambda": 1.2841233616083176,
+        "gamma": 2.3493959205265593
+      },
+      "prova": {
+        "n_estimators": 750,
+        "learning_rate": 0.013588435140155187,
+        "max_depth": 4,
+        "min_child_weight": 107.97227038758926,
+        "subsample": 0.8345066204419569,
+        "colsample_bytree": 0.6274270018214865,
+        "reg_lambda": 0.3571754085212707,
+        "gamma": 2.4538294454553524
+      }
     },
     "Luna": {
-      "n_estimators": 100,
-      "learning_rate": 0.03074191025227815,
-      "num_leaves": 8,
-      "min_child_samples": 519,
-      "subsample": 0.6158752425293057,
-      "colsample_bytree": 0.52933180579724,
-      "reg_lambda": 0.2803073653685954
+      "2020": {
+        "n_estimators": 800,
+        "learning_rate": 0.015426321838035472,
+        "num_leaves": 17,
+        "min_child_samples": 417,
+        "subsample": 0.5957085217635236,
+        "colsample_bytree": 0.7046394168417641,
+        "reg_lambda": 7.6162934869168994
+      },
+      "2021": {
+        "n_estimators": 100,
+        "learning_rate": 0.03074191025227815,
+        "num_leaves": 8,
+        "min_child_samples": 519,
+        "subsample": 0.6158752425293057,
+        "colsample_bytree": 0.52933180579724,
+        "reg_lambda": 0.2803073653685954
+      },
+      "2022": {
+        "n_estimators": 150,
+        "learning_rate": 0.018554061000532487,
+        "num_leaves": 15,
+        "min_child_samples": 381,
+        "subsample": 0.9018695180521877,
+        "colsample_bytree": 0.5666587932039768,
+        "reg_lambda": 0.15064690807208664
+      },
+      "2023": {
+        "n_estimators": 450,
+        "learning_rate": 0.07601934095188381,
+        "num_leaves": 4,
+        "min_child_samples": 97,
+        "subsample": 0.9608034946043149,
+        "colsample_bytree": 0.3000952704692011,
+        "reg_lambda": 3.051203907222543
+      },
+      "prova": {
+        "n_estimators": 300,
+        "learning_rate": 0.04637690533338843,
+        "num_leaves": 6,
+        "min_child_samples": 718,
+        "subsample": 0.8271251263957529,
+        "colsample_bytree": 0.9838274851582165,
+        "reg_lambda": 13.328873681856827
+      }
     }
   },
   "tentativas": {
-    "Xavier": 30,
-    "Luna": 30
+    "Xavier_2020": 20,
+    "Xavier_2021": 20,
+    "Xavier_2022": 20,
+    "Xavier_2023": 20,
+    "Xavier_prova": 20,
+    "Luna_2020": 20,
+    "Luna_2021": 20,
+    "Luna_2022": 20,
+    "Luna_2023": 20,
+    "Luna_prova": 20
   },
-  "perda_padrao": {
-    "Xavier": 1.040119352127033,
-    "Luna": 1.0657077249207483
+  "detalhes": {
+    "Xavier": {
+      "2020": {
+        "validado_em": 2019,
+        "sharpe_padrao": -0.7180739730198894,
+        "sharpe_melhor": 1.16301349250601,
+        "capture_melhor": 0.03972208410068463,
+        "capture_padrao": -0.03535128166968551
+      },
+      "2021": {
+        "validado_em": 2020,
+        "sharpe_padrao": -0.0955783126132354,
+        "sharpe_melhor": 1.2879300843689936,
+        "capture_melhor": 0.07524113495733316,
+        "capture_padrao": -0.07768596186020231
+      },
+      "2022": {
+        "validado_em": 2021,
+        "sharpe_padrao": 0.21985511829735876,
+        "sharpe_melhor": 1.3955567799738604,
+        "capture_melhor": 0.0310784022452827,
+        "capture_padrao": -0.14223887015640316
+      },
+      "2023": {
+        "validado_em": 2022,
+        "sharpe_padrao": -1.339018850905202,
+        "sharpe_melhor": 1.40979599264556,
+        "capture_melhor": -0.08987562262302114,
+        "capture_padrao": -0.48972271756232744
+      },
+      "prova": {
+        "validado_em": 2023,
+        "sharpe_padrao": -0.8203947114124643,
+        "sharpe_melhor": -0.25047862508729307,
+        "capture_melhor": -0.025745937878601657,
+        "capture_padrao": -0.07601131111164713
+      }
+    },
+    "Luna": {
+      "2020": {
+        "validado_em": 2019,
+        "sharpe_padrao": -0.9288353757291402,
+        "sharpe_melhor": -0.44318296605672036,
+        "capture_melhor": -0.10021727263972424,
+        "capture_padrao": -0.1247517769616982
+      },
+      "2021": {
+        "validado_em": 2020,
+        "sharpe_padrao": -0.6738191994251468,
+        "sharpe_melhor": 1.6320575108120068,
+        "capture_melhor": 0.06516385863293474,
+        "capture_padrao": -0.20413969723068817
+      },
+      "2022": {
+        "validado_em": 2021,
+        "sharpe_padrao": 0.8151538761025311,
+        "sharpe_melhor": 1.4349243468893502,
+        "capture_melhor": 0.013411450124494477,
+        "capture_padrao": -0.014748899642892433
+      },
+      "2023": {
+        "validado_em": 2022,
+        "sharpe_padrao": -1.6591819539860553,
+        "sharpe_melhor": -0.4243173303141575,
+        "capture_melhor": -0.3752696753564309,
+        "capture_padrao": -0.22433917946939283
+      },
+      "prova": {
+        "validado_em": 2023,
+        "sharpe_padrao": -1.4800333413089284,
+        "sharpe_melhor": -0.5776122758511489,
+        "capture_melhor": 0.009783596475287282,
+        "capture_padrao": -0.10973980656624355
+      }
+    }
   },
-  "tentativas_total": 60
+  "tentativas_total": 200
 }

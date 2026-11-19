@@ -53,8 +53,28 @@ def contexto_da_regra(rot, feats, spot, semana, treino):
     return ctx
 
 
+def regime_semanal_por_candle(spot):
+    """Regime (v0.2) da semana de calendário de cada candle, pelo retorno do BTC naquela semana.
+    Só é usado em rótulos de TREINO, que já terminaram, para equilibrar os exemplos."""
+    from ml.regimes import classificar
+    c = spot["fechamento"]
+    chave = spot.index.to_period("W-SUN").start_time
+    ultimo = c.groupby(chave).last()
+    ret = ultimo / ultimo.shift(1) - 1
+    return pd.Series(classificar(ret).reindex(chave).to_numpy(), index=spot.index)
+
+
+def pesos_por_regime(regimes):
+    """Cada regime recebe o mesmo peso total: as altas fortes não ficam sub-representadas
+    e as quedas não dominam o aprendizado (sem favorecer compra nem venda)."""
+    cont = pd.Series(regimes).value_counts()
+    cont = cont[cont.index != "nan"]
+    fator = (len(regimes) / (len(cont) * cont)).to_dict()
+    return np.array([fator.get(r, 1.0) for r in regimes])
+
+
 def prever_walkforward(estagiario, feats, rot, semanas, meia_vida_dias=365, reforco_erro=1.0,
-                       inicio_treino=None, log=print):
+                       inicio_treino=None, log=print, params_por_semana=None, regime=None):
     """Gera as probabilidades fora da amostra, semana a semana. Devolve DataFrame com p_baixa, p_tempo, p_alta."""
     X_all = feats.to_numpy()
     y_all = rot["rotulo"].to_numpy()
@@ -64,12 +84,21 @@ def prever_walkforward(estagiario, feats, rot, semanas, meia_vida_dias=365, refo
         valido = valido & (rot.index >= pd.Timestamp(inicio_treino))
     fim_rot = rot["fim_rotulo"].to_numpy()
     reforco = np.ones(len(rot))
+    reg_all = None if regime is None else regime.reindex(rot.index).astype(str).to_numpy()
     previsoes = []
     t0 = time.time()
+    params_atuais = None
     for k, semana in enumerate(semanas):
+        if params_por_semana is not None:
+            novos = params_por_semana(semana)
+            if novos != params_atuais:  # hiperparâmetros escolhidos só com anos anteriores (Optuna aninhado)
+                estagiario = type(estagiario)(**novos)
+                params_atuais = novos
         treino = valido & (fim_rot <= np.datetime64(semana)) & (rot.index < semana)
         idade = (semana - rot.index[treino]).days.to_numpy()
         peso = u_all[treino] * 0.5 ** (idade / meia_vida_dias) * reforco[treino]
+        if reg_all is not None:
+            peso = peso * pesos_por_regime(reg_all[treino])
         estagiario.treinar(X_all[treino], y_all[treino], peso / peso.mean())
 
         na_semana = (rot.index >= semana) & (rot.index < semana + UMA_SEMANA)
@@ -88,11 +117,13 @@ def prever_walkforward(estagiario, feats, rot, semanas, meia_vida_dias=365, refo
 
 
 def operar(estagiario, previsoes, feats, rot, spot, funding, semanas, regra=RegraParaTodos(),
-           horizonte=24, semana_de_estudo=True, historico_meta=None):
+           horizonte=24, semana_de_estudo=True, historico_meta=None, limiar_meta=0.5):
     """Aplica a regra para todos às previsões e simula cada semana.
 
     A Luna, além disso, usa o meta-modelo treinado com as próprias entradas passadas.
-    A primeira semana é o estudo inicial (só observa, não opera)."""
+    A primeira semana é o estudo inicial (só observa, não opera).
+    limiar_meta: confiança mínima do meta para a Luna entrar (número ou função semana -> número).
+    v0.2: a Luna não encolhe mais a posição pela confiança; o meta só aprova ou veta."""
     usa_meta = hasattr(estagiario, "treinar_meta")
     custo_lado = regra.taxa + regra.spread_slippage
     historico_meta = [] if historico_meta is None else historico_meta
@@ -116,9 +147,10 @@ def operar(estagiario, previsoes, feats, rot, spot, funding, semanas, regra=Regr
                 estagiario.treinar_meta(hist.drop(columns="acertou"), hist["acertou"])
             q = estagiario.confianca_meta(X_meta)
             dec["confianca_meta"] = q
-            vetar = q < 0.5
+            limiar = limiar_meta(semana) if callable(limiar_meta) else limiar_meta
+            vetar = q < limiar
             dec.loc[vetar, "lado"] = 0
-            dec["tamanho"] = np.where(vetar, 0.0, dec["tamanho"] * q)
+            dec["tamanho"] = np.where(vetar, 0.0, dec["tamanho"])
             # guarda as propostas desta semana para o estudo futuro (deu lucro ou não?)
             propostas = dec["lado_primario"] != 0
             if propostas.any():
