@@ -38,7 +38,42 @@ def teste_custos_benchmark():
         assert trocas.loc[s, NOME_BENCH] == 2
 
 
+def _dados_ml():
+    df = dados_sinteticos("1h", "2021-01-01", "2021-05-01")
+    df["volume_usdt"] = df["volume"] * df["fechamento"]
+    df["negocios"] = df["volume"] / 2
+    df["compra_agressora"] = df["volume"] * 0.5
+    df["compra_agressora_usdt"] = df["volume_usdt"] * 0.5
+    return df
+
+
+def teste_features_sem_futuro():
+    """As features do candle t não podem mudar se bagunçarmos os preços depois de t."""
+    from ml.features import montar_features
+    df = _dados_ml()
+    corte = len(df) // 2
+    b = df.copy()
+    b.iloc[corte + 1:] *= np.random.default_rng(1).uniform(0.5, 1.5, size=(len(df) - corte - 1, 1))
+    fa = montar_features(df, eth=df, perp=df).iloc[: corte + 1]
+    fb = montar_features(b, eth=b, perp=b).iloc[: corte + 1]
+    pd.testing.assert_frame_equal(fa, fb)
+
+
+def teste_purging():
+    """No walk-forward, nenhum rótulo de treino pode terminar depois do início da semana operada."""
+    from ml.rotulos import triple_barrier
+    df = _dados_ml()
+    rot = triple_barrier(df)
+    semana = pd.Timestamp("2021-03-01")
+    treino = rot["valido"] & (rot["fim_rotulo"] <= semana) & (rot.index < semana)
+    assert (rot.loc[treino, "fim_rotulo"] <= semana).all()
+    # e o último candle de treino precisa estar a pelo menos 1 hora do início da semana
+    assert rot.index[treino].max() <= semana - pd.Timedelta("2h")
+
+
 if __name__ == "__main__":
     teste_sem_olhar_o_futuro()
     teste_custos_benchmark()
-    print("OK: ninguém olha o futuro e os custos do Benchmark batem.")
+    teste_features_sem_futuro()
+    teste_purging()
+    print("OK: ninguém olha o futuro (estratégias, features e rótulos) e os custos do Benchmark batem.")

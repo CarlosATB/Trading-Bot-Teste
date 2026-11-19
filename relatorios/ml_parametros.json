@@ -1,0 +1,32 @@
+{
+  "melhores": {
+    "Xavier": {
+      "n_estimators": 350,
+      "learning_rate": 0.021485617651261335,
+      "max_depth": 2,
+      "min_child_weight": 132.9364367540003,
+      "subsample": 0.8715581897808873,
+      "colsample_bytree": 0.48159576078485894,
+      "reg_lambda": 25.850508636005127,
+      "gamma": 1.1220041849182274
+    },
+    "Luna": {
+      "n_estimators": 100,
+      "learning_rate": 0.03074191025227815,
+      "num_leaves": 8,
+      "min_child_samples": 519,
+      "subsample": 0.6158752425293057,
+      "colsample_bytree": 0.52933180579724,
+      "reg_lambda": 0.2803073653685954
+    }
+  },
+  "tentativas": {
+    "Xavier": 30,
+    "Luna": 30
+  },
+  "perda_padrao": {
+    "Xavier": 1.040119352127033,
+    "Luna": 1.0657077249207483
+  },
+  "tentativas_total": 60
+}

@@ -1,0 +1,114 @@
+Xavier: perda com parâmetros padrão = 1.0401
+  tentativa 1: 1.0349 (melhor 1.0349)
+  tentativa 2: 1.0284 (melhor 1.0284)
+  tentativa 3: 1.0534 (melhor 1.0284)
+  tentativa 4: 1.0320 (melhor 1.0284)
+  tentativa 5: 1.0240 (melhor 1.0240)
+  tentativa 6: 1.0497 (melhor 1.0240)
+  tentativa 7: 1.0455 (melhor 1.0240)
+  tentativa 8: 1.0296 (melhor 1.0240)
+  tentativa 9: 1.0356 (melhor 1.0240)
+  tentativa 10: 1.0390 (melhor 1.0240)
+  tentativa 11: 1.0223 (melhor 1.0223)
+  tentativa 12: 1.0363 (melhor 1.0223)
+  tentativa 13: 1.0352 (melhor 1.0223)
+  tentativa 14: 1.0160 (melhor 1.0160)
+  tentativa 15: 1.0166 (melhor 1.0160)
+  tentativa 16: 1.0211 (melhor 1.0160)
+  tentativa 17: 1.0203 (melhor 1.0160)
+  tentativa 18: 1.0161 (melhor 1.0160)
+  tentativa 19: 1.0170 (melhor 1.0160)
+  tentativa 20: 1.0174 (melhor 1.0160)
+  tentativa 21: 1.0209 (melhor 1.0160)
+  tentativa 22: 1.0185 (melhor 1.0160)
+  tentativa 23: 1.0167 (melhor 1.0160)
+  tentativa 24: 1.0162 (melhor 1.0160)
+  tentativa 25: 1.0200 (melhor 1.0160)
+  tentativa 26: 1.0189 (melhor 1.0160)
+  tentativa 27: 1.0166 (melhor 1.0160)
+  tentativa 28: 1.0201 (melhor 1.0160)
+  tentativa 29: 1.0191 (melhor 1.0160)
+  tentativa 30: 1.0167 (melhor 1.0160)
+Xavier: melhor perda 1.0160 -> usa os parâmetros novos
+Luna: perda com parâmetros padrão = 1.0657
+  tentativa 1: 1.0467 (melhor 1.0467)
+  tentativa 2: 1.0187 (melhor 1.0187)
+  tentativa 3: 1.0517 (melhor 1.0187)
+  tentativa 4: 1.0726 (melhor 1.0187)
+  tentativa 5: 1.0442 (melhor 1.0187)
+  tentativa 6: 1.1458 (melhor 1.0187)
+  tentativa 7: 1.0675 (melhor 1.0187)
+  tentativa 8: 1.0712 (melhor 1.0187)
+  tentativa 9: 1.0474 (melhor 1.0187)
+  tentativa 10: 1.0339 (melhor 1.0187)
+  tentativa 11: 1.0127 (melhor 1.0127)
+  tentativa 12: 1.0113 (melhor 1.0113)
+  tentativa 13: 1.0142 (melhor 1.0113)
+  tentativa 14: 1.0283 (melhor 1.0113)
+  tentativa 15: 1.0164 (melhor 1.0113)
+  tentativa 16: 1.0173 (melhor 1.0113)
+  tentativa 17: 1.0189 (melhor 1.0113)
+  tentativa 18: 1.0372 (melhor 1.0113)
+  tentativa 19: 1.0161 (melhor 1.0113)
+  tentativa 20: 1.0138 (melhor 1.0113)
+  tentativa 21: 1.0183 (melhor 1.0113)
+  tentativa 22: 1.0223 (melhor 1.0113)
+  tentativa 23: 1.0136 (melhor 1.0113)
+  tentativa 24: 1.0191 (melhor 1.0113)
+  tentativa 25: 1.0120 (melhor 1.0113)
+  tentativa 26: 1.0121 (melhor 1.0113)
+  tentativa 27: 1.0230 (melhor 1.0113)
+  tentativa 28: 1.0136 (melhor 1.0113)
+  tentativa 29: 1.0141 (melhor 1.0113)
+  tentativa 30: 1.0214 (melhor 1.0113)
+Luna: melhor perda 1.0113 -> usa os parâmetros novos
+Salvo em D:\Trading Bot\empresa_trading\relatorios\ml_parametros.json
+Carregando dados e montando features...
+  61,308 candles de 1h | 55 features | rótulos: 26% alta, 26% baixa, 48% tempo
+
+--- ESTÁGIO 2020 (52 semanas, não conta para o RH) ---
+                                Semanas Ganhou do Bench Média/semana Excesso médio Retorno encadeado Queda máxima Sharpe (anual) DSR Operações/semana % compras Acerto Tempo posicionado
+Xavier (XGBoost)                     52             27%       +0.35%        -2.72%           +14.01%      -29.25%           0.56  3%             3.85       56%    50%               33%
+Luna (LightGBM + meta-labeling)      52             31%       -0.40%        -3.46%           -21.40%      -26.52%          -0.81  0%             2.98       65%    45%               28%
+Régua (regressão logística)          52             31%       +0.37%        -2.69%           +13.21%      -21.12%           0.51  3%             6.15       48%    50%               56%
+Benchmark (buy and hold)             52               -       +3.07%             -          +283.63%      -47.98%           2.38   -                -         -      -                 -
+
+--- TREINO 2021-2023 (156 semanas, cada uma testada separadamente) ---
+                                Semanas Ganhou do Bench Média/semana Excesso médio Retorno encadeado Queda máxima Sharpe (anual) DSR Operações/semana % compras Acerto Tempo posicionado Status final
+Régua (regressão logística)         156             42%       +0.23%        -0.01%           +14.86%      -55.13%           0.31  3%             4.41       43%    53%               39%     Demitido
+Xavier (XGBoost)                    156             47%       +0.18%        -0.06%           +20.70%      -41.04%           0.37  4%             2.43       45%    51%               22%     Demitido
+Luna (LightGBM + meta-labeling)     156             49%       -0.02%        -0.26%            -5.15%      -18.51%          -0.07  1%             1.76       43%    50%               16%     Demitido
+Benchmark (buy and hold)            156               -       +0.24%             -           -19.79%      -78.92%           0.20   -                -         -      -                 -            -
+
+Empresa: retorno +33.9% | queda máxima -26.4%
+Benchmark: retorno -19.8% | queda máxima -78.9%
+Diário do RH:
+  2021-07-12: Xavier (XGBoost): Estagiário -> Promovido (ganhou do Benchmark por +42.1% em 26 semanas)
+  2021-07-12: Luna (LightGBM + meta-labeling): Estagiário -> Promovido (ganhou do Benchmark por +11.9% em 26 semanas)
+  2021-07-12: Régua (regressão logística): Estagiário -> Promovido (ganhou do Benchmark por +13.4% em 26 semanas)
+  2021-11-29: Xavier (XGBoost): Promovido -> Advertido (perdeu do Benchmark por -24.9%)
+  2021-11-29: Luna (LightGBM + meta-labeling): Promovido -> Advertido (perdeu do Benchmark por -23.6%)
+  2022-01-24: Xavier (XGBoost): Advertido -> Estagiário (desempenho neutro)
+  2022-01-24: Luna (LightGBM + meta-labeling): Advertido -> Promovido (ganhou do Benchmark por +8.2% em 26 semanas)
+  2022-02-21: Xavier (XGBoost): Estagiário -> Promovido (ganhou do Benchmark por +40.9% em 26 semanas)
+  2022-12-26: Xavier (XGBoost): Promovido -> Advertido (perdeu do Benchmark por -0.9%)
+  2022-12-26: Régua (regressão logística): Promovido -> Advertido (perdeu do Benchmark por -10.5%)
+  2023-01-23: Luna (LightGBM + meta-labeling): Promovido -> Advertido (perdeu do Benchmark por -2.8%)
+  2023-02-20: Xavier (XGBoost): Advertido -> Demitido (3 advertências seguidas)
+  2023-02-20: Régua (regressão logística): Advertido -> Demitido (3 advertências seguidas)
+  2023-03-20: Luna (LightGBM + meta-labeling): Advertido -> Demitido (3 advertências seguidas)
+
+(DSR leva em conta 63 tentativas no total. Acima de 95% é evidência forte.)
+
+--- PROVA: 20 semanas sorteadas de 2024-2025 (nada foi ajustado) ---
+                                Vitórias Excesso médio Chance de ser sorte Status no treino Aprovado Operações/semana % compras Acerto Tempo posicionado
+Luna (LightGBM + meta-labeling)    13/20        -0.08%                 13%         Demitido      não             0.90       44%    67%                7%
+Xavier (XGBoost)                   14/20        -0.60%                  6%         Demitido      não             1.30       42%    50%               12%
+Régua (regressão logística)        10/20        -1.81%                 59%         Demitido      não             3.45       32%    42%               31%
+  (aviso: MLflow não registrou: Invalid value "Sharpe_(anual)" for parameter 'metrics[6].name' supplied: Names may only contain alphanumerics, underscores (_), dashes (-), periods (.), spaces ( ) and slashes (/).)
+  (aviso: MLflow não registrou: Invalid value "Sharpe_(anual)" for parameter 'metrics[6].name' supplied: Names may only contain alphanumerics, underscores (_), dashes (-), periods (.), spaces ( ) and slashes (/).)
+  (aviso: MLflow não registrou: Invalid value "Sharpe_(anual)" for parameter 'metrics[6].name' supplied: Names may only contain alphanumerics, underscores (_), dashes (-), periods (.), spaces ( ) and slashes (/).)
+
+Tabelas em D:\Trading Bot\empresa_trading\relatorios | experimentos no MLflow: mlflow ui --backend-store-uri sqlite:///mlflow.db
+Lembrete: resultado passado não garante resultado futuro.
+
