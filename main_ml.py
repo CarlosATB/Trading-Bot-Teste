@@ -10,6 +10,7 @@ relatorios/registro_da_prova.csv, e isso entra na conta do Deflated Sharpe.
 """
 import argparse
 import hashlib
+import re
 import json
 import sys
 import time
@@ -103,6 +104,14 @@ def fmt(t):
         else:
             t[c] = v.map(lambda x: "-" if pd.isna(x) else f"{x:+.2%}")
     return t.to_string()
+
+
+def nome_metrica(k):
+    """O MLflow só aceita letras, números, _, -, . e / nos nomes."""
+    import unicodedata
+    k = unicodedata.normalize("NFKD", k).encode("ascii", "ignore").decode()
+    k = k.replace("%", "pct").replace("/", "_por_")
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", k).strip("_")
 
 
 def registrar_mlflow(nome_run, params, metricas, arquivos):
@@ -213,8 +222,7 @@ def main():
             metricas["prova_excesso_medio"] = prova.loc[est.nome, "Excesso médio"]
         registrar_mlflow(est.nome, {**est.parametros, "horizonte": HORIZONTE, "k_barreira": K_BARREIRA,
                                     **{f"regra_{k}": v for k, v in vars(regra).items()}},
-                         {k.replace(" ", "_").replace("/", "_por_").replace("%", "pct"): v
-                          for k, v in metricas.items()}, arquivos)
+                         {nome_metrica(k): v for k, v in metricas.items()}, arquivos)
     print(f"\nTabelas em {REL} | experimentos no MLflow: mlflow ui --backend-store-uri sqlite:///mlflow.db")
     print("Lembrete: resultado passado não garante resultado futuro.\n")
 

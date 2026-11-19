@@ -109,7 +109,7 @@ class Regua(EstagiarioML):
         from sklearn.linear_model import LogisticRegression
         from sklearn.pipeline import make_pipeline
         from sklearn.preprocessing import StandardScaler
-        self.modelo = make_pipeline(SimpleImputer(strategy="median"), StandardScaler(),
+        self.modelo = make_pipeline(SimpleImputer(strategy="median", keep_empty_features=True), StandardScaler(),
                                     LogisticRegression(C=self.parametros["C"], max_iter=500))
         Xc = np.clip(X, -1e6, 1e6)
         self.modelo.fit(Xc, y + 1, logisticregression__sample_weight=peso)
