@@ -1,5 +1,7 @@
 # Empresa de Trading (simulação)
 
+> **[Primeiro resultado (v0.1)](RESULTADOS.md):** nenhum bot aprovado ainda; o Xavier (XGBoost) ganhou do Benchmark em 14 de 20 semanas da prova.
+
 Laboratório para testar estratégias de trade com dados históricos, organizado como uma empresa:
 
 - **Dono:** você. Define as regras do RH e decide o que fazer com os resultados.
